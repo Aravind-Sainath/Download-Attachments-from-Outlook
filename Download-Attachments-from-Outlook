@@ -1,0 +1,20 @@
+$o = New-Object -comobject outlook.application
+$n = $o.GetNamespace("MAPI")
+
+
+$Account = $n.Folders | ? { $_.Name -eq 'mail@company.com' };
+$Inbox = $Account.Folders | ? { $_.Name -match 'Inbox' };
+$f = $Inbox.Folders | ? { $_.Name -match 'Subfolder Name' };
+#$f = $n.PickFolder()
+
+$filepath = "Path of the file to save"
+
+$f.Items| foreach {
+   $_.attachments|foreach {
+    Write-Host $_.filename
+    $a = $_.filename
+    If ($a.Contains("txt")) {
+    $_.saveasfile((Join-Path $filepath "$a.txt"))
+   }
+  }
+}
