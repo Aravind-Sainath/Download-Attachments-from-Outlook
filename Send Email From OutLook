@@ -20,7 +20,7 @@ $style = $style + "TD{border: 1px solid black; padding: 5px; }"
 $style = $style + "</style>"
 #$Sign = "Thank you"
 
-$body1= $DataSet1.Tables[0].Rows | Select @{Name="Host Name";Expression={$_.Hostname}},Division,@{Name="Service Line";Expression={$_.ServiceLine}}, @{Name="Service Line Application";Expression={$_.ServiceLineApplication}},Entity, @{Name="Operating System";Expression={$_.OperatingSystem}}, @{Name="OS Type";Expression={$_.OSType}}, Decommissioned, @{Name="Last Scan Date";Expression={$_.LastScanDate}}, @{Name="Decom Week";Expression={$_."Decom Week"}} | ConvertTo-Html -Head $style  
+$body1= $table data here| ConvertTo-Html -Head $style  
 $body2 = "<Html> <br>Regards<Br>Aravind</html>"
 $body =$test + $body1 +$body2
 #$body=  $listItems | ConvertTo-Html -Head $style, $test, $Sign
@@ -35,6 +35,5 @@ $attach = new-object Net.Mail.Attachment($attachment)
 $message.Attachments.Add($attach) 
 $message.IsBodyHTML = $true
 $message.body = $body 
-#$message.Body= $listItems | %{new-object PSObject -Property @{Title=$_["Title"];Modified=$_["Modified"]}} | select Title,Modified
 $smtp = new-object Net.Mail.SmtpClient($smtpserver) 
 $smtp.Send($message)
