@@ -1,0 +1,40 @@
+$fromaddress = "emailaddress" 
+$toaddress = "email address seperated by ','"
+$Subject = "your subject line" 
+$attachment="if you have attachments keep the path here"
+$test= "<Html>
+  <td style='padding:0cm 0cm 0cm 0cm'>
+  <p class=MsoNormal style='line-height:105%'><span style='mso-no-proof:yes'>
+  <img width=550 height=107 
+   src='' alt=Logo v:shapes='Picture_x0020_2'><![endif]></span><o:p></o:p></p>
+  </td>
+ </tr>
+ 
+<p class='MsoNormal'><span style='font-size: 14px;'>Hi All, <br /><br /> This is Powershell generated email <br /></span></p>
+</Html>"
+#this code is for creating table if not required remove
+$style = "<style>BODY{font-family: Arial; font-size: 8pt;}"
+$style = $style + "TABLE{border: 1px solid black; border-collapse: collapse;}"
+$style = $style + "TH{border: 1px solid black; background: #dddddd; padding: 5px; }"
+$style = $style + "TD{border: 1px solid black; padding: 5px; }"
+$style = $style + "</style>"
+#$Sign = "Thank you"
+
+$body1= $DataSet1.Tables[0].Rows | Select @{Name="Host Name";Expression={$_.Hostname}},Division,@{Name="Service Line";Expression={$_.ServiceLine}}, @{Name="Service Line Application";Expression={$_.ServiceLineApplication}},Entity, @{Name="Operating System";Expression={$_.OperatingSystem}}, @{Name="OS Type";Expression={$_.OSType}}, Decommissioned, @{Name="Last Scan Date";Expression={$_.LastScanDate}}, @{Name="Decom Week";Expression={$_."Decom Week"}} | ConvertTo-Html -Head $style  
+$body2 = "<Html> <br>Regards<Br>Aravind</html>"
+$body =$test + $body1 +$body2
+#$body=  $listItems | ConvertTo-Html -Head $style, $test, $Sign
+$smtpserver = "what is your outlook server name" 
+
+$message = new-object System.Net.Mail.MailMessage 
+$message.From = $fromaddress 
+$message.To.Add($toaddress)
+$message.IsBodyHtml = $True 
+$message.Subject = $Subject 
+$attach = new-object Net.Mail.Attachment($attachment) 
+$message.Attachments.Add($attach) 
+$message.IsBodyHTML = $true
+$message.body = $body 
+#$message.Body= $listItems | %{new-object PSObject -Property @{Title=$_["Title"];Modified=$_["Modified"]}} | select Title,Modified
+$smtp = new-object Net.Mail.SmtpClient($smtpserver) 
+$smtp.Send($message)
